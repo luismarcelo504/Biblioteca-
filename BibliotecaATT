@@ -23,3 +23,182 @@ public class Livro {
     }
 }
 
+import java.util.Scanner;
+
+public class Servicos {
+
+    public static void main(String[] args) {
+
+        Biblioteca biblioteca = new Biblioteca();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n===== MENU =====");
+            System.out.println("[1] Cadastrar livro");
+            System.out.println("[2] Listar livros");
+            System.out.println("[3] Buscar por título");
+            System.out.println("[4] Buscar por autor");
+            System.out.println("[5] Buscar por ano");
+            System.out.println("[6] Ordenar por título");
+            System.out.println("[7] Ordenar por autor");
+            System.out.println("[8] Ordenar por ano");
+            System.out.println("[0] Sair");
+
+            System.out.print("Escolha: ");
+
+            
+            String entrada = scanner.nextLine();
+
+            int opcao;
+            try {
+                opcao = Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números.");
+                continue;
+            }
+
+            switch (opcao) {
+
+                case 1:
+                    System.out.print("Título: ");
+                    String titulo = scanner.nextLine();
+                    System.out.print("Autor: ");
+                    String autor = scanner.nextLine();
+                    System.out.print("Ano: ");
+
+                    int ano;
+                    try {
+                        ano = Integer.parseInt(scanner.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Ano inválido.");
+                        break;
+                    }
+
+                    biblioteca.adicionarLivro(titulo, autor, ano);
+                    break;
+
+                case 2:
+                    biblioteca.listarLivros();
+                    break;
+
+                case 3:
+                    System.out.print("Título para buscar: ");
+                    biblioteca.buscarPorTitulo(scanner.nextLine());
+                    break;
+
+                case 4:
+                    System.out.print("Autor para buscar: ");
+                    biblioteca.buscarPorAutor(scanner.nextLine());
+                    break;
+
+                case 5:
+                    System.out.print("Ano para buscar: ");
+
+                    int anoBusca;
+                    try {
+                        anoBusca = Integer.parseInt(scanner.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Ano inválido.");
+                        break;
+                    }
+
+                    biblioteca.buscarPorAno(anoBusca);
+                    break;
+
+                case 6:
+                    biblioteca.ordenarPorTitulo();
+                    break;
+
+                case 7:
+                    biblioteca.ordenarPorAutor();
+                    break;
+
+                case 8:
+                    biblioteca.ordenarPorAno();
+                    break;
+
+                case 0:
+                    System.out.println("Saindo...");
+                    return;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+}
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class Biblioteca {
+
+    private ArrayList<Livro> livros = new ArrayList<>();
+    private int proximoId = 1;
+
+    public void adicionarLivro(String titulo, String autor, int ano) {
+        Livro livro = new Livro(proximoId, titulo, autor, ano);
+        livros.add(livro);
+        proximoId++;
+    }
+
+    public void listarLivros() {
+        if (livros.isEmpty()) {
+            System.out.println("Nenhum livro cadastrado.");
+            return;
+        }
+        for (Livro livro : livros) {
+            System.out.println(livro);
+        }
+    }
+
+    public void buscarPorTitulo(String titulo) {
+        boolean encontrou = false;
+        for (Livro livro : livros) {
+            if (livro.getTitulo().equalsIgnoreCase(titulo)) {
+                System.out.println(livro);
+                encontrou = true;
+            }
+        }
+        if (!encontrou) System.out.println("Nenhum livro encontrado com esse título.");
+    }
+
+    public void buscarPorAutor(String autor) {
+        boolean encontrou = false;
+        for (Livro livro : livros) {
+            if (livro.getAutor().equalsIgnoreCase(autor)) {
+                System.out.println(livro);
+                encontrou = true;
+            }
+        }
+        if (!encontrou) System.out.println("Nenhum livro encontrado desse autor.");
+    }
+
+    public void buscarPorAno(int ano) {
+        boolean encontrou = false;
+        for (Livro livro : livros) {
+            if (livro.getAno() == ano) {
+                System.out.println(livro);
+                encontrou = true;
+            }
+        }
+        if (!encontrou) System.out.println("Nenhum livro encontrado desse ano.");
+    }
+
+    public void ordenarPorTitulo() {
+        Collections.sort(livros, Comparator.comparing(Livro::getTitulo));
+        System.out.println("Livros ordenados por título.");
+    }
+
+    public void ordenarPorAutor() {
+        Collections.sort(livros, Comparator.comparing(Livro::getAutor));
+        System.out.println("Livros ordenados por autor.");
+    }
+
+    public void ordenarPorAno() {
+        Collections.sort(livros, Comparator.comparingInt(Livro::getAno));
+        System.out.println("Livros ordenados por ano.");
+    }
+}
+
